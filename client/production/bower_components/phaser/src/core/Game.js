@@ -5,14 +5,12 @@
 */
 
 /**
-* Game constructor
-*
-* Instantiate a new <code>Phaser.Game</code> object.
-* @class Phaser.Game
-* @classdesc This is where the magic happens. The Game object is the heart of your game,
+* This is where the magic happens. The Game object is the heart of your game,
 * providing quick access to common functions and handling the boot process.
 * "Hell, there are no rules here - we're trying to accomplish something."
 *                                                       Thomas A. Edison
+*
+* @class Phaser.Game
 * @constructor
 * @param {number|string} [width=800] - The width of your game in game pixels. If given as a string the value must be between 0 and 100 and will be used as the percentage width of the parent container, or the browser window if no parent is given.
 * @param {number|string} [height=600] - The height of your game in game pixels. If given as a string the value must be between 0 and 100 and will be used as the percentage height of the parent container, or the browser window if no parent is given.
@@ -20,7 +18,7 @@
 * @param {string|HTMLElement} [parent=''] - The DOM element into which this games canvas will be injected. Either a DOM ID (string) or the element itself.
 * @param {object} [state=null] - The default state object. A object consisting of Phaser.State functions (preload, create, update, render) or null.
 * @param {boolean} [transparent=false] - Use a transparent canvas background or not.
-* @param  {boolean} [antialias=true] - Draw all image textures anti-aliased or not. The default is for smooth textures, but disable if your game features pixel art.
+* @param {boolean} [antialias=true] - Draw all image textures anti-aliased or not. The default is for smooth textures, but disable if your game features pixel art.
 * @param {object} [physicsConfig=null] - A physics configuration object to pass to the Physics world on creation.
 */
 Phaser.Game = function (width, height, renderer, parent, state, transparent, antialias, physicsConfig) {
@@ -570,13 +568,6 @@ Phaser.Game.prototype = {
     */
     setUpRenderer: function () {
 
-        if (this.device.trident)
-        {
-            //  Pixi WebGL renderer on IE11 doesn't work correctly at the moment, the pre-multiplied alpha gets all washed out.
-            //  So we're forcing canvas for now until this is fixed, sorry. It's got to be better than no game appearing at all, right?
-            this.renderType = Phaser.CANVAS;
-        }
-
         if (this.config['canvasID'])
         {
             this.canvas = Phaser.Canvas.create(this.width, this.height, this.config['canvasID']);
@@ -617,7 +608,7 @@ Phaser.Game.prototype = {
                     this.renderType = Phaser.CANVAS;
                 }
 
-                this.renderer = new PIXI.CanvasRenderer(this.width, this.height, this.canvas, this.transparent);
+                this.renderer = new PIXI.CanvasRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": 1, "clearBeforeRender": true });
                 this.context = this.renderer.context;
             }
             else
@@ -629,7 +620,8 @@ Phaser.Game.prototype = {
         {
             //  They requested WebGL and their browser supports it
             this.renderType = Phaser.WEBGL;
-            this.renderer = new PIXI.WebGLRenderer(this.width, this.height, this.canvas, this.transparent, this.antialias, this.preserveDrawingBuffer);
+
+            this.renderer = new PIXI.WebGLRenderer(this.width, this.height, { "view": this.canvas, "transparent": this.transparent, "resolution": 1, "antialias": this.antialias, "preserveDrawingBuffer": this.preserveDrawingBuffer });
             this.context = null;
         }
 

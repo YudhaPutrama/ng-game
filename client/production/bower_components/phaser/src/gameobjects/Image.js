@@ -5,11 +5,11 @@
 */
 
 /**
-* @class Phaser.Image
-*
-* @classdesc Create a new `Image` object. An Image is a light-weight object you can use to display anything that doesn't need physics or animation.
+* An Image is a light-weight object you can use to display anything that doesn't need physics or animation.
 * It can still rotate, scale, crop and receive input events. This makes it perfect for logos, backgrounds, simple buttons and other non-Sprite graphics.
 *
+* @class Phaser.Image
+* @extends PIXI.Sprite
 * @constructor
 * @param {Phaser.Game} game - A reference to the currently running game.
 * @param {number} x - The x coordinate of the Image. The coordinate is relative to any parent container this Image may be in.
@@ -261,7 +261,13 @@ Phaser.Image.prototype.loadTexture = function (key, frame) {
     }
     else if (key instanceof Phaser.BitmapData)
     {
+        //  This works from a reference, which probably isn't what we need here
         this.setTexture(key.texture);
+
+        if (this.game.cache.getFrameData(key.key, Phaser.Cache.BITMAPDATA))
+        {
+            setFrame = !this.animations.loadFrameData(this.game.cache.getFrameData(key.key, Phaser.Cache.BITMAPDATA), frame);
+        }
     }
     else if (key instanceof PIXI.Texture)
     {
@@ -287,6 +293,8 @@ Phaser.Image.prototype.loadTexture = function (key, frame) {
             setFrame = !this.animations.loadFrameData(this.game.cache.getFrameData(key), frame);
         }
     }
+    
+    this.texture.baseTexture.dirty();
 
     if (setFrame)
     {
@@ -341,18 +349,17 @@ Phaser.Image.prototype.setFrame = function(frame) {
         this.texture.frame.width = frame.sourceSizeW;
         this.texture.frame.height = frame.sourceSizeH;
     }
+    else if (!frame.trimmed && this.texture.trim)
+    {
+        this.texture.trim = null;
+    }
 
     if (this.cropRect)
     {
         this.updateCrop();
     }
-    else
-    {
-        if (this.game.renderType === Phaser.WEBGL)
-        {
-            PIXI.WebGLRenderer.updateTextureFrame(this.texture);
-        }
-    }
+
+    this.texture._updateUvs();
 
 };
 
@@ -448,10 +455,7 @@ Phaser.Image.prototype.updateCrop = function() {
     this.texture.width = this.texture.frame.width;
     this.texture.height = this.texture.frame.height;
 
-    if (this.game.renderType === Phaser.WEBGL)
-    {
-        PIXI.WebGLRenderer.updateTextureFrame(this.texture);
-    }
+    this.texture._updateUvs();
 
 };
 

@@ -10,6 +10,7 @@
 *
 * @class Phaser.TileSprite
 * @constructor
+* @extends PIXI.TilingSprite
 * @param {Phaser.Game} game - A reference to the currently running game.
 * @param {number} x - The x coordinate (in world space) to position the TileSprite at.
 * @param {number} y - The y coordinate (in world space) to position the TileSprite at.
@@ -376,6 +377,8 @@ Phaser.TileSprite.prototype.loadTexture = function (key, frame) {
             this.animations.loadFrameData(this.game.cache.getFrameData(key), frame);
         }
     }
+    
+    this.texture.baseTexture.dirty();
 
 };
 
@@ -418,11 +421,12 @@ Phaser.TileSprite.prototype.setFrame = function(frame) {
         this.texture.frame.width = frame.sourceSizeW;
         this.texture.frame.height = frame.sourceSizeH;
     }
-
-    if (this.game.renderType === Phaser.WEBGL)
+    else if (!frame.trimmed && this.texture.trim)
     {
-        PIXI.WebGLRenderer.updateTextureFrame(this.texture);
+        this.texture.trim = null;
     }
+
+    this.texture._updateUvs();
 
 };
 

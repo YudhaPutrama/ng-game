@@ -180,6 +180,19 @@ Phaser.GameObjectFactory.prototype = {
     },
 
     /**
+     * Creates a new AudioSprite object.
+     *
+     * @method Phaser.GameObjectFactory#audioSprite
+     * @param {string} key - The Game.cache key of the sound that this object will use.
+     * @return {Phaser.AudioSprite} The newly created AudioSprite object.
+     */
+    audioSprite: function (key) {
+
+        return this.game.sound.addSprite(key);
+
+    },
+
+    /**
     * Creates a new TileSprite object.
     *
     * @method Phaser.GameObjectFactory#tileSprite
@@ -206,12 +219,12 @@ Phaser.GameObjectFactory.prototype = {
     * @method Phaser.GameObjectFactory#rope
     * @param {number} x - The x coordinate (in world space) to position the TileSprite at.
     * @param {number} y - The y coordinate (in world space) to position the TileSprite at.
-    * @param {number} width - The width of the TileSprite.
-    * @param {number} height - The height of the TileSprite.
     * @param {string|Phaser.RenderTexture|Phaser.BitmapData|PIXI.Texture} key - This is the image or texture used by the TileSprite during rendering. It can be a string which is a reference to the Cache entry, or an instance of a RenderTexture or PIXI.Texture.
     * @param {string|number} frame - If this TileSprite is using part of a sprite sheet or texture atlas you can specify the exact frame to use by giving a string or numeric index.
+		* @param {Array} points - An array of {Phaser.Point}.
     * @param {Phaser.Group} [group] - Optional Group to add the object to. If not specified it will be added to the World group.
     * @return {Phaser.TileSprite} The newly created tileSprite object.
+		* Example usage: https://github.com/codevinsky/phaser-rope-demo/blob/master/dist/demo.js
     */
     rope: function (x, y, key, frame, points, group) {
 

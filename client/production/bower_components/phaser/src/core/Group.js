@@ -5,9 +5,11 @@
 */
 
 /**
-* Phaser Group constructor.
+* A Group is a container for display objects that allows for fast pooling and object recycling.
+* Groups can be nested within other Groups and have their own local transforms.
+* 
 * @class Phaser.Group
-* @classdesc A Group is a container for display objects that allows for fast pooling and object recycling. Groups can be nested within other Groups and have their own local transforms.
+* @extends PIXI.DisplayObjectContainer
 * @constructor
 * @param {Phaser.Game} game - A reference to the currently running game.
 * @param {Phaser.Group|Phaser.Sprite|null} parent - The parent Group, DisplayObject or DisplayObjectContainer that this Group will be added to. If `undefined` it will use game.world. If null it won't be added to anything.
@@ -73,6 +75,12 @@ Phaser.Group = function (game, parent, name, addToStage, enableBody, physicsBody
     * @default
     */
     this.exists = true;
+
+    /**
+    * @property {boolean} ignoreDestroy - A Group with `ignoreDestroy` set to `true` ignores all calls to its `destroy` method.
+    * @default
+    */
+    this.ignoreDestroy = false;
 
     /**
     * The type of objects that will be created when you use Group.create or Group.createMultiple. Defaults to Phaser.Sprite.
@@ -788,7 +796,7 @@ Phaser.Group.prototype.checkProperty = function (child, key, value, force) {
     {
         return false;
     }
-    
+
     if (Phaser.Utils.getProperty(child, key) !== value)
     {
         return false;
@@ -1196,6 +1204,36 @@ Phaser.Group.prototype.postUpdate = function () {
         this.children[i].postUpdate();
     }
 
+};
+
+
+/**
+* Allows you to obtain a Phaser.ArrayList of children that return true for the given predicate
+* For example:
+*     var healthyList = Group.filter(function(child, index, children) {
+*         return child.health > 10 ? true : false;
+*     }, true);
+*     healthyList.callAll('attack');
+* Note: Currently this will skip any children which are Groups themselves.
+* @method Phaser.Group#filter
+* @param {function} predicate - The function that each child will be evaluated against. Each child of the Group will be passed to it as its first parameter, the index as the second, and the entire child array as the third
+* @param {boolean} [checkExists=false] - If set only children with exists=true will be passed to the callback, otherwise all children will be passed.
+* @return {Phaser.ArrayList} Returns an array list containing all the children that the predicate returned true for
+*/
+Phaser.Group.prototype.filter = function(predicate, checkExists) {
+    var index = -1,
+        length = this.children.length,
+        result = new Phaser.ArrayList();
+
+    while(++index < length) {
+        var child = this.children[index];
+        if(!checkExists || (checkExists && child.exists)) {
+            if(predicate(child, index, this.children)) {
+                result.add(child);
+            }
+        }
+    }
+    return result;
 };
 
 /**
@@ -1712,7 +1750,7 @@ Phaser.Group.prototype.removeBetween = function (startIndex, endIndex, destroy, 
 */
 Phaser.Group.prototype.destroy = function (destroyChildren, soft) {
 
-    if (this.game === null) { return; }
+    if (this.game === null || this.ignoreDestroy) { return; }
 
     if (typeof destroyChildren === 'undefined') { destroyChildren = true; }
     if (typeof soft === 'undefined') { soft = false; }

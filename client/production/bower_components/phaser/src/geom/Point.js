@@ -5,18 +5,12 @@
 */
 
 /**
-* @class Phaser.Point
-* @classdesc
-* The Point object represents a location in a two-dimensional coordinate system, 
-* where x represents the horizontal axis and y represents the vertical axis.
+* A Point object represents a location in a two-dimensional coordinate system, where x represents the horizontal axis and y represents the vertical axis.
 * The following code creates a point at (0,0):
 * `var myPoint = new Phaser.Point();`
 * You can also use them as 2D Vectors and you'll find different vector related methods in this class.
-*/
-
-/**
-* Creates a new Point object. If you pass no parameters a Point is created set to (0, 0).
-*
+* 
+* @class Phaser.Point
 * @constructor
 * @param {number} [x=0] - The horizontal position of this Point.
 * @param {number} [y=0] - The vertical position of this Point.
@@ -867,6 +861,38 @@ Phaser.Point.centroid = function (points, out) {
     out.divide(pointslength, pointslength);
 
     return out;
+
+};
+
+/**
+* Parses an object for x and/or y properties and returns a new Phaser.Point with matching values.
+* If the object doesn't contain those properties a Point with x/y of zero will be returned.
+*
+* @method Phaser.Point.parse
+* @static
+* @param {Object} obj - The object to parse.
+* @param {string} [xProp='x'] - The property used to set the Point.x value.
+* @param {string} [yProp='y'] - The property used to set the Point.y value.
+* @return {Phaser.Point} The new Point object.
+*/
+Phaser.Point.parse = function(obj, xProp, yProp) {
+
+    xProp = xProp || 'x';
+    yProp = yProp || 'y';
+
+    var point = new Phaser.Point();
+
+    if (obj[xProp])
+    {
+        point.x = parseInt(obj[xProp], 10);
+    }
+
+    if (obj[yProp])
+    {
+        point.y = parseInt(obj[yProp], 10);
+    }
+
+    return point;
 
 };
 

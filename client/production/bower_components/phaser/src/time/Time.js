@@ -5,10 +5,10 @@
 */
 
 /**
-* Time constructor.
+* This is the core internal game clock.
+* It manages the elapsed time and calculation of elapsed values, used for game object motion and tweens.
 *
 * @class Phaser.Time
-* @classdesc This is the core internal game clock. It manages the elapsed time and calculation of elapsed values, used for game object motion and tweens.
 * @constructor
 * @param {Phaser.Game} game A reference to the currently running game.
 */
@@ -24,6 +24,12 @@ Phaser.Time = function (game) {
     * @protected
     */
     this.time = 0;
+
+    /**
+    * @property {number} prevTime - The time the previous update occurred.
+    * @protected
+    */
+    this.prevTime = 0;
 
     /**
     * @property {number} now - The time right now.
@@ -235,6 +241,8 @@ Phaser.Time.prototype = {
     * @param {number} time - The current timestamp.
     */
     update: function (time) {
+
+        this.prevTime = this.now;
 
         this.now = time;
 

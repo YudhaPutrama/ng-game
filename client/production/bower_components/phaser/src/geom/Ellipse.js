@@ -7,14 +7,13 @@
 
 /**
 * Creates a Ellipse object. A curve on a plane surrounding two focal points.
-* @class Ellipse
-* @classdesc Phaser - Ellipse
+* 
+* @class Phaser.Ellipse
 * @constructor
 * @param {number} [x=0] - The X coordinate of the upper-left corner of the framing rectangle of this ellipse.
 * @param {number} [y=0] - The Y coordinate of the upper-left corner of the framing rectangle of this ellipse.
 * @param {number} [width=0] - The overall width of this ellipse.
 * @param {number} [height=0] - The overall height of this ellipse.
-* @return {Phaser.Ellipse} This Ellipse object
 */
 Phaser.Ellipse = function (x, y, width, height) {
 
@@ -66,6 +65,17 @@ Phaser.Ellipse.prototype = {
         this.height = height;
 
         return this;
+
+    },
+
+    /**
+    * Returns the framing rectangle of the ellipse as a Phaser.Rectangle object.
+    * @method Phaser.Ellipse#getBounds
+    * @return {Phaser.Rectangle} The bounds of the Circle.
+    */
+    getBounds: function () {
+
+        return new Phaser.Rectangle(this.x - this.width, this.y - this.height, this.width, this.height);
 
     },
 

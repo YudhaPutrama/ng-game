@@ -83,6 +83,11 @@ Phaser.AnimationManager.prototype = {
     */
     loadFrameData: function (frameData, frame) {
 
+        if (typeof frameData === 'undefined')
+        {
+            return false;
+        }
+
         if (this.isLoaded)
         {
             //   We need to update the frameData that the animations are using
@@ -232,7 +237,7 @@ Phaser.AnimationManager.prototype = {
     */
     validateFrames: function (frames, useNumericIndex) {
 
-        if (typeof useNumericIndex == 'undefined') { useNumericIndex = true; }
+        if (typeof useNumericIndex === 'undefined') { useNumericIndex = true; }
 
         for (var i = 0; i < frames.length; i++)
         {
@@ -306,9 +311,9 @@ Phaser.AnimationManager.prototype = {
     */
     stop: function (name, resetFrame) {
 
-        if (typeof resetFrame == 'undefined') { resetFrame = false; }
+        if (typeof resetFrame === 'undefined') { resetFrame = false; }
 
-        if (typeof name == 'string')
+        if (typeof name === 'string')
         {
             if (this._anims[name])
             {
@@ -492,6 +497,23 @@ Object.defineProperty(Phaser.AnimationManager.prototype, 'paused', {
     set: function (value) {
 
         this.currentAnim.paused = value;
+
+    }
+
+});
+
+/**
+* @name Phaser.AnimationManager#name
+* @property {string} name - Gets the current animation name, if set.
+*/
+Object.defineProperty(Phaser.AnimationManager.prototype, 'name', {
+
+    get: function () {
+
+        if (this.currentAnim)
+        {
+            return this.currentAnim.name;
+        }
 
     }
 

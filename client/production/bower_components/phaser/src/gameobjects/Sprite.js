@@ -5,14 +5,13 @@
 */
 
 /**
-* @class Phaser.Sprite
-*
-* @classdesc Create a new `Sprite` object. Sprites are the lifeblood of your game, used for nearly everything visual.
+* Sprites are the lifeblood of your game, used for nearly everything visual.
 *
 * At its most basic a Sprite consists of a set of coordinates and a texture that is rendered to the canvas.
 * They also contain additional properties allowing for physics motion (via Sprite.body), input handling (via Sprite.input),
 * events (via Sprite.events), animation (via Sprite.animations), camera culling and more. Please see the Examples for use cases.
 *
+* @class Phaser.Sprite
 * @constructor
 * @extends PIXI.Sprite
 * @param {Phaser.Game} game - A reference to the currently running game.
@@ -380,6 +379,11 @@ Phaser.Sprite.prototype.loadTexture = function (key, frame, stopAnimation) {
     {
         //  This works from a reference, which probably isn't what we need here
         this.setTexture(key.texture);
+
+        if (this.game.cache.getFrameData(key.key, Phaser.Cache.BITMAPDATA))
+        {
+            setFrame = !this.animations.loadFrameData(this.game.cache.getFrameData(key.key, Phaser.Cache.BITMAPDATA), frame);
+        }
     }
     else if (key instanceof PIXI.Texture)
     {
@@ -405,6 +409,8 @@ Phaser.Sprite.prototype.loadTexture = function (key, frame, stopAnimation) {
             setFrame = !this.animations.loadFrameData(this.game.cache.getFrameData(key), frame);
         }
     }
+    
+    this.texture.baseTexture.dirty();
 
     if (setFrame)
     {
@@ -459,18 +465,17 @@ Phaser.Sprite.prototype.setFrame = function(frame) {
         this.texture.frame.width = frame.sourceSizeW;
         this.texture.frame.height = frame.sourceSizeH;
     }
+    else if (!frame.trimmed && this.texture.trim)
+    {
+        this.texture.trim = null;
+    }
 
     if (this.cropRect)
     {
         this.updateCrop();
     }
-    else
-    {
-        if (this.game.renderType === Phaser.WEBGL)
-        {
-            PIXI.WebGLRenderer.updateTextureFrame(this.texture);
-        }
-    }
+
+    this.texture._updateUvs();
 
 };
 
@@ -569,10 +574,7 @@ Phaser.Sprite.prototype.updateCrop = function() {
     this.texture.width = this.texture.frame.width;
     this.texture.height = this.texture.frame.height;
 
-    if (this.game.renderType === Phaser.WEBGL)
-    {
-        PIXI.WebGLRenderer.updateTextureFrame(this.texture);
-    }
+    this.texture._updateUvs();
 
 };
 
