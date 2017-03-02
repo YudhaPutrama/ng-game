@@ -1,0 +1,10 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Ari Lerner - @auser
+
+# TECHNOLOGY COLOPHON
+
+    Fullstack.io

@@ -2,27 +2,32 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Web client</title>
+  <title>Hompimpa Challenge</title>
   
   <!-- substitute:css -->
+  <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css" />
   <link rel="stylesheet" href="bower_components/ngDialog/css/ngDialog.min.css" />
   <link rel="stylesheet" href="bower_components/ngDialog/css/ngDialog-theme-default.min.css" />
+  <link rel="stylesheet" href="bower_components/fullpage.js/jquery.fullPage.css" />
 </head>
 <body ng-app="app">
   
   <div navbar></div>
-  <div overlay-bar></div>
+  <!--<div overlay-bar></div>-->
   <div class='content'>
     <div ui-view></div>
   </div>
 
   <!-- substitute:livereload -->
   <script type="text/javascript" src="bower_components/jquery/dist/jquery.js"></script>
+  <script type="text/javascript" src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="bower_components/fullpage.js/jquery.fullpage.min.js"></script>
   <script type="text/javascript" src="bower_components/lodash/dist/lodash.js"></script>
   <script type="text/javascript" src="bower_components/angular/angular.min.js"></script>
   <script type="text/javascript" src="bower_components/ngDialog/js/ngDialog.js"></script>
   <script type="text/javascript" src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
   <script type="text/javascript" src="bower_components/angular-socket-io/socket.js"></script>
+  <script type="text/javascript" src="bower_components/angular-fullpage.js/angular-fullpage.js"></script>
   <script type="text/javascript" src="bower_components/phaser/build/phaser.min.js"></script>
   
   <!-- substitute:js -->

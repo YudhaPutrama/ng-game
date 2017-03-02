@@ -1,6 +1,8 @@
 
 angular.module('app', [
   'ui.router',
+  'fullPage.js',
+  require('./home').name,
   require('./menu').name,
   require('./game').name,
   require('./user').name,
@@ -10,5 +12,5 @@ angular.module('app', [
 ])
 .config(function($urlRouterProvider) {
   $urlRouterProvider
-    .otherwise('/menu');
+    .otherwise('/');
 })
